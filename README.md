@@ -1,2 +1,4 @@
 # churner
-A much less feature-complete copy of OpenWhisk built in Go for learning purposes. Do NOT use in production.
+[![Build Status](https://travis-ci.com/nickbirnberg/churner.svg?token=qyjjyAxFnRqFpzrshLQ1&branch=master)](https://travis-ci.com/nickbirnberg/churner)
+
+An implementation of a FaaS service for mostly learning purposes.
