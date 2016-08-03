@@ -1,0 +1,13 @@
+hash: d23b5d46763618026215872e8937435ca8c7fbb7172117cecb25af2f9902a8d0
+updated: 2016-08-03T12:48:10.314279102-04:00
+imports:
+- name: github.com/julienschmidt/httprouter
+  version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
+- name: gopkg.in/mgo.v2
+  version: 01084657862d7b12d3b10ffd0394357abf8f8bc2
+  subpackages:
+  - bson
+  - internal/sasl
+  - internal/scram
+  - internal/json
+testImports: []
