@@ -9,6 +9,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/nickbirnberg/churner/common"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -17,7 +19,7 @@ var server *httptest.Server
 
 func TestMain(m *testing.M) {
 	server = httptest.NewServer(getRouter())
-	session, err := mgo.Dial(mustGetenv("MONGO_ADDR"))
+	session, err := mgo.Dial(common.MustGetenv("MONGO_ADDR"))
 	if err != nil {
 		os.Exit(70741)
 	}
@@ -57,7 +59,7 @@ func TestGetAction(t *testing.T) {
 		t.Errorf("could not drop DB: %v", err)
 	}
 
-	someAction := &action{User: "testUser"}
+	someAction := &common.Action{User: "testUser"}
 	someAction.ID = bson.NewObjectId()
 	err = db.C("actions").Insert(someAction)
 	if err != nil {
@@ -93,7 +95,7 @@ func TestPostAction(t *testing.T) {
 		t.Errorf("could not drop DB: %v", err)
 	}
 
-	someAction := &action{User: "testUser"}
+	someAction := &common.Action{User: "testUser"}
 
 	b := new(bytes.Buffer)
 	err = json.NewEncoder(b).Encode(*someAction)
@@ -110,7 +112,7 @@ func TestPostAction(t *testing.T) {
 		t.Errorf("response code '%v' not expected", resp.Status)
 	}
 
-	returnedAction := &action{}
+	returnedAction := &common.Action{}
 	err = db.C("actions").Find(nil).One(&returnedAction)
 	if err != nil {
 		t.Error(err)

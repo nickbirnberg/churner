@@ -8,13 +8,9 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/nickbirnberg/churner/common"
 	"gopkg.in/mgo.v2/bson"
 )
-
-type action struct {
-	ID                    bson.ObjectId `bson:"_id,omitempty"`
-	NameSpace, User, Code string
-}
 
 // GetAction gets an action
 func GetAction(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -28,7 +24,7 @@ func GetAction(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	objectID := bson.ObjectIdHex(id)
 
-	userAction := action{}
+	userAction := common.Action{}
 	err := db.C("actions").FindId(objectID).One(&userAction)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -49,7 +45,7 @@ func PostAction(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	userAction := action{}
+	userAction := common.Action{}
 
 	err = json.Unmarshal(body, &userAction)
 	if err != nil {
