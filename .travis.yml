@@ -1,3 +1,5 @@
+sudo: required
+
 language: go
 
 go:
@@ -9,3 +11,4 @@ script:
 
 services:
   - mongodb
+  - docker

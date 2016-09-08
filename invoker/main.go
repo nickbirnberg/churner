@@ -4,12 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/fsouza/go-dockerclient"
 	"github.com/julienschmidt/httprouter"
 	"github.com/nickbirnberg/churner/common"
 	"gopkg.in/mgo.v2"
 )
 
 var db *mgo.Database
+var dclient *docker.Client
 
 func main() {
 	// Create database connection
@@ -25,6 +27,13 @@ func main() {
 		log.Println("Closing MongoDB Connection")
 		session.Close()
 	}()
+
+	// Create Docker client
+	log.Printf("Creating Docker client from ENV variables")
+	dclient, err = docker.NewClientFromEnv()
+	if err != nil {
+		log.Fatalf("Failed to create Docker client: %v", err)
+	}
 
 	router := getRouter()
 
