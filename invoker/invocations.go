@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -61,11 +60,13 @@ func getParam(r *http.Request) (string, error) {
 	}
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 10e6))
 	if err != nil {
-		return "", fmt.Errorf("couldn't read request body:%v", err)
+		log.Println("couldn't read request body:", err)
+		return "", err
 	}
 	err = json.Unmarshal(body, &actionParams)
 	if err != nil {
-		return "", fmt.Errorf("error unmarshaling user param:%v", err)
+		log.Println("error unmarshaling user param:", err)
+		return "", err
 	}
 	return actionParams.Param, nil
 }
@@ -83,11 +84,13 @@ func createRunContainer() (string, error) {
 	}
 	container, err := dclient.CreateContainer(containerOptions)
 	if err != nil {
-		return "", fmt.Errorf("failed to create container:%v", err)
+		log.Println("failed to create container:", err)
+		return "", err
 	}
 	err = dclient.StartContainer(container.ID, nil)
 	if err != nil {
-		return "", fmt.Errorf("failed to start container:%v", err)
+		log.Println("failed to start container:", err)
+		return "", err
 	}
 
 	return container.ID, nil
@@ -103,18 +106,21 @@ func postAction(code, params string) ([]byte, error) {
 	jsonBuffer := new(bytes.Buffer)
 	err := json.NewEncoder(jsonBuffer).Encode(containerCode)
 	if err != nil {
-		return nil, fmt.Errorf("could not encode json to send to container:%v", err)
+		log.Println("could not encode json to send to container", err)
+		return nil, err
 	}
 
 	resp, err := http.Post("http://127.0.0.1"+":8091"+"/run", "application/json", jsonBuffer)
 	if err != nil {
-		return nil, fmt.Errorf("failed to POST to container:%v", err)
+		log.Println("failed to POST to container:", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("can not read response from container:%v", err)
+		log.Println("can not read response from container:", err)
+		return nil, err
 	}
 	return body, nil
 }
